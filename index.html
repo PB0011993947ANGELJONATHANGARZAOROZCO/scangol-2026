@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#121212" />
+    <title>Expe-Mundial 2026</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="manifest" href="manifest.json">
+  </head>
+
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-content">
+    <div class="app-logo"><i class="fas fa-futbol"></i></div>
+    <h1 class="header-title">SCANGOL <span class="gradient-text">2026</span></h1>
+  </div>
+</header>
+
+<!-- Intro -->
+<div id="intro" class="container intro-container">
+
+  <div class="hero-card">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="badge">Experiencia AR</span>
+      <h2 class="hero-title">El Fútbol en tus Manos</h2>
+      <p class="hero-text">Escanea escudos, ve modelos 3D y vive la pasión del torneo más grande de la historia.</p>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-item"><i class="fas fa-camera"></i><span>Escanea</span></div>
+    <div class="feature-item"><i class="fas fa-cube"></i><span>Descubre</span></div>
+    <div class="feature-item"><i class="fas fa-trophy"></i><span>Juega</span></div>
+  </div>
+
+  <section class="cta-section">
+    <h3 class="cta-text">Explora el Torneo</h3>
+
+    <div class="buttons-main">
+
+      <button class="cta-button camera-button" id="startBtn" title="Iniciar Realidad Aumentada">
+        <i class="fas fa-camera"></i>
+        <span>Cámara RA</span>
+      </button>
+
+      <button class="cta-button stats-button" onclick="showStats()" title="Ver estadísticas">
+        <i class="fas fa-chart-bar"></i>
+        <span>Estadísticas</span>
+      </button>
+
+      <button class="cta-button trivia-button" onclick="showTrivia()" title="Jugar trivia">
+        <i class="fas fa-quiz"></i>
+        <span>Trivia</span>
+      </button>
+
+      <button class="cta-button video-button" onclick="showVideo()" title="Ver video">
+        <i class="fas fa-play-circle"></i>
+        <span>Video</span>
+      </button>
+
+    </div>
+  </section>
+</div>
+
+<!-- AR -->
+<div id="ar-container" class="ar-container"></div>
+<div class="ar-overlay"></div>
+
+<!-- Controles -->
+<div id="ar-header" class="ar-header" style="display:none;">
+  <h2>Expe-Mundial 2026</h2>
+  <button id="backBtn" class="back-btn" title="Volver">
+    <i class="fas fa-arrow-left"></i> Salir
+  </button>
+</div>
+
+<div id="buttons-panel" class="buttons-panel">
+  <button id="btn4" class="action-btn" title="Animar modelo">
+    <i class="fas fa-play"></i> Animar
+  </button>
+</div>
+
+<div id="camera-controls" style="display:none;">
+  <button id="btnSnapshot" class="snapshot-btn" onclick="takeSnapshot()" title="Tomar Foto">
+    <i class="fas fa-camera"></i>
+  </button>
+</div>
+
+<div id="ar-footer" style="display:none;"></div>
+
+<!-- Info Boxes -->
+<div id="infoBox" class="info-box" style="display:none;"></div>
+
+<div id="statsBox" class="info-box stats-box" style="display:none;">
+  <button class="close-btn" onclick="closeStats()" title="Cerrar">
+    <i class="fas fa-times"></i>
+  </button>
+  <div id="statsContent" class="stats-content"></div>
+</div>
+
+<div id="triviaBox" class="info-box trivia-box" style="display:none;">
+  <button class="close-btn" onclick="closeTriviaOrVideo()" title="Cerrar">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <div class="trivia-content">
+    <p id="triviaQuestion"></p>
+    <div id="triviaOptions"></div>
+    <p id="triviaResult"></p>
+  </div>
+</div>
+
+<!-- VIDEO -->
+<div id="videoBox" class="info-box video-box" style="display:none;">
+
+  <button class="close-btn" onclick="closeVideo()" title="Cerrar">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <!-- CONTENEDOR VIDEO CON FLECHAS -->
+  <div style="position:relative; width:100%; display:flex; align-items:center; justify-content:center;">
+
+    <button onclick="prevVideo()"
+      style="position:absolute; left:5px; z-index:5; background:rgba(0,0,0,0.5); border:none; color:white; font-size:26px; padding:12px; cursor:pointer;">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <video id="videoPlayer" playsinline style="width:100%;"></video>
+
+    <button onclick="nextVideo()"
+      style="position:absolute; right:5px; z-index:5; background:rgba(0,0,0,0.5); border:none; color:white; font-size:26px; padding:12px; cursor:pointer;">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="video-controls">
+
+    <button class="video-btn" onclick="togglePlayPause()" title="Play/Pausa">
+      <i class="fas fa-play"></i> Play/Pausa
+    </button>
+
+    <button class="video-btn" onclick="applyFilter1()" title="Escala de grises">
+      <i class="fas fa-filter"></i> Blur
+    </button>
+
+    <button class="video-btn" onclick="applyFilter2()" title="Sepia">
+      <i class="fas fa-filter"></i> Alta Saturacion
+    </button>
+
+    <button class="video-btn" onclick="applyFilter3()" title="Invertido">
+      <i class="fas fa-filter"></i> Bajo contraste
+    </button>
+
+  </div>
+</div>
+
+<!-- FOTO -->
+<div id="photoPreviewBox" class="info-box photo-box" style="display:none;">
+
+  <button class="close-btn" onclick="closePhotoPreview()" title="Cerrar">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <div class="photo-content">
+
+    <h3 style="text-align:center; margin-bottom:10px;">Tu Foto AR</h3>
+
+    <img id="capturedImage" src="" alt="Captura AR"
+      style="width:100%; border-radius:8px; margin-bottom:15px; border: 2px solid #eee;">
+
+    <div class="video-controls">
+
+      <button class="video-btn" onclick="applyPhotoFilter('none')">
+        <i class="fas fa-ban"></i> Normal
+      </button>
+
+      <button class="video-btn" onclick="applyPhotoFilter('blur(2px)')">
+  <i class="fas fa-filter"></i> Blur
+</button>
+
+<button class="video-btn" onclick="applyPhotoFilter('saturate(200%)')">
+  <i class="fas fa-filter"></i> Alta Saturacion
+</button>
+
+<button class="video-btn" onclick="applyPhotoFilter('contrast(60%)')">
+  <i class="fas fa-filter"></i> Bajo contraste
+</button>
+
+    </div>
+
+    <button class="cta-button"
+      style="margin-top:15px; background: linear-gradient(135deg, #1877F2, #166fe5); min-height: 50px;"
+      onclick="sharePhoto()">
+
+      <i class="fab fa-facebook-f"></i>
+      <span>Compartir en Facebook</span>
+
+    </button>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registrado:', registration);
+        })
+        .catch(error => {
+          console.log('Error al registrar Service Worker:', error);
+        });
+    });
+  }
+</script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/ar.js"></script>
+<script src="assets/js/stats.js"></script>
+<script src="assets/js/trivia.js"></script>
+<script src="assets/js/video.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
